@@ -1,0 +1,6 @@
+{
+  "name": "NBS Nails - Cyber Diva 2000s",
+  "description": "Nails by Soa 2000s cyber glam DVD screensaver with Gemini AI bespoke nail architecture and 3D sculpting consultations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

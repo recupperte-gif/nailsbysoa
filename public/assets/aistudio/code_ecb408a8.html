@@ -1,0 +1,555 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>NBS NAILS // DVD Screensaver Experience</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&amp;family=VT323&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet">
+<style>
+    :root {
+      --primary-pink: #ff007f;
+      --bubblegum: #ff66b2;
+      --cyber-cyan: #00f0ff;
+      --matrix-lime: #39ff14;
+      --electric-purple: #b026ff;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #050208;
+      overflow: hidden;
+      font-family: 'Space Grotesk', sans-serif;
+      user-select: none;
+    }
+
+    /* CRT Monitor Frame & Curved Glass */
+    .crt-screen {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at center, #14071b 0%, #08030b 70%, #020104 100%);
+      overflow: hidden;
+    }
+
+    /* Scanlines effect */
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.65) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 127, 0.03),
+        rgba(0, 255, 255, 0.02),
+        rgba(0, 0, 255, 0.03)
+      );
+      background-size: 100% 4px, 6px 100%;
+      z-index: 40;
+    }
+
+    /* CRT Vignette & Glow */
+    .crt-vignette {
+      position: absolute;
+      inset: 0;
+      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.95), inset 0 0 40px rgba(255, 0, 127, 0.25);
+      pointer-events: none;
+      z-index: 45;
+    }
+
+    /* CRT Rolling bar simulation */
+    .crt-flicker {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 0, 127, 0.015);
+      opacity: 0.8;
+      pointer-events: none;
+      z-index: 41;
+      animation: flicker 0.15s infinite;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 0.97; }
+      50% { opacity: 1; }
+      100% { opacity: 0.96; }
+    }
+
+    /* DVD Bouncer Container */
+    #dvd-logo-box {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      cursor: pointer;
+      z-index: 30;
+      transition: filter 0.2s ease, transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      will-change: transform, left, top;
+    }
+
+    #dvd-logo-box:hover {
+      transform: scale(1.08);
+      filter: drop-shadow(0 0 35px var(--glow-color, #ff007f)) brightness(1.2);
+    }
+
+    /* Click Prompt Overlay */
+    .press-start-badge {
+      font-family: 'VT323', monospace;
+      animation: blink 1.1s steps(1) infinite;
+      text-shadow: 0 0 12px #ff007f, 0 0 25px rgba(255, 0, 127, 0.8);
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    .y2k-syne {
+      font-family: 'Syne', sans-serif;
+    }
+
+    .pixel-font {
+      font-family: 'VT323', monospace;
+    }
+
+    /* Floating retro Y2K sparkles */
+    .sparkle {
+      position: absolute;
+      color: #ff99dd;
+      font-size: 14px;
+      pointer-events: none;
+      animation: sparkleFloat 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes sparkleFloat {
+      0% { transform: translateY(0px) scale(0.8) rotate(0deg); opacity: 0.3; }
+      50% { transform: translateY(-15px) scale(1.3) rotate(90deg); opacity: 0.9; }
+      100% { transform: translateY(-30px) scale(0.8) rotate(180deg); opacity: 0.2; }
+    }
+
+    /* Full transition out effect for background */
+    .open-portal-anim {
+      animation: hyperspaceWarp 1.4s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+    }
+
+    @keyframes hyperspaceWarp {
+      0% {
+        filter: brightness(1);
+      }
+      40% {
+        filter: brightness(1.6) contrast(1.3) drop-shadow(0 0 60px #ff007f);
+      }
+      100% {
+        opacity: 0.1;
+        filter: brightness(3) blur(12px);
+      }
+    }
+
+    /* Y2K Girl Avatar Transition Animations */
+    .spin-slow {
+      animation: spinRays 8s linear infinite;
+    }
+    @keyframes spinRays {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .spin-slow-reverse {
+      animation: spinRaysRev 10s linear infinite;
+    }
+    @keyframes spinRaysRev {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    /* Dynamic avatar intro popup & zoom sequence */
+    .avatar-portal-intro {
+      animation: stickerPopIn 1.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes stickerPopIn {
+      0% {
+        transform: scale(0.1) rotate(-18deg);
+        opacity: 0;
+        filter: brightness(2) drop-shadow(0 0 80px #ff007f);
+      }
+      35% {
+        transform: scale(1.08) rotate(3deg);
+        opacity: 1;
+        filter: brightness(1.2) drop-shadow(0 0 45px #ff007f);
+      }
+      65% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+        filter: drop-shadow(0 0 35px #ff71ce);
+      }
+      85% {
+        transform: scale(1.25) rotate(-2deg);
+        filter: brightness(1.8) drop-shadow(0 0 70px #00f0ff);
+      }
+      100% {
+        transform: scale(3.2) rotate(4deg);
+        opacity: 0;
+        filter: brightness(3.5) blur(10px);
+      }
+    }
+  </style>
+</head>
+<body class="bg-black text-white overflow-hidden">
+<!-- Audio elements simulated via Web Audio synth for authentic 2000s boing/chime on bounce & click -->
+<div class="crt-screen relative w-screen h-screen flex flex-col justify-between" id="screensaver-root">
+<!-- Retro Scanlines & CRT layers -->
+<div class="scanlines"></div>
+<div class="crt-vignette"></div>
+<div class="crt-flicker"></div>
+<!-- Random Background Y2K ambient elements & starburst grid -->
+<div class="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(#ff007f_1px,transparent_1px)] [background-size:32px_32px]"></div>
+<!-- Retro Corner Accents / CRT OSD (On-Screen Display) -->
+<header class="relative z-30 p-6 flex justify-between items-start pointer-events-none">
+<div class="flex items-center gap-3">
+<div class="w-3.5 h-3.5 rounded-full bg-emerald-400 shadow-[0_0_12px_#39ff14] animate-pulse"></div>
+<div class="font-mono text-xs tracking-widest text-emerald-400/90 pixel-font text-lg">
+          [DVD-VIDEO] DISC_01 // PLAYING
+        </div>
+</div>
+<!-- Center Status: Early 2000s Sony / Cyber Glam HUD -->
+<div class="text-center bg-black/60 backdrop-blur-md border border-pink-500/30 px-6 py-2 rounded-full shadow-[0_0_20px_rgba(255,0,127,0.25)] flex items-center gap-4">
+<span class="text-pink-400 font-extrabold tracking-widest text-xs uppercase y2k-syne flex items-center gap-1.5">
+<span class="inline-block animate-spin text-sm">💿</span> NAILS BY SOA // 2000s SPECIAL EDITION
+        </span>
+<span class="text-zinc-600">|</span>
+<span class="pixel-font text-pink-300 text-lg tracking-wider" id="bounce-counter">CORNER HITS: 00</span>
+</div>
+<!-- Right HUD: Audio & Region -->
+<div class="text-right pixel-font text-pink-400 text-lg tracking-wider leading-tight">
+<div class="">DOLBY DIGITAL 5.1 CH</div>
+<div class="text-zinc-400 text-sm">CH-01: HOT PINK GLAM</div>
+</div>
+</header>
+<!-- Floating Retro Sparkles in Ambient Space -->
+<div class="sparkle top-1/4 left-1/5">✦</div>
+<div class="sparkle top-2/3 left-1/3">★</div>
+<div class="sparkle top-1/3 right-1/4">✦</div>
+<div class="sparkle bottom-1/4 right-1/3">✧</div>
+<div class="sparkle bottom-1/3 left-1/2">★</div>
+<!-- BOUNCING DVD LOGO CONTAINER (Equipped with glowing NBS NAILS DVD emblem) -->
+<div class="group rounded-3xl p-2 flex flex-col items-center justify-center cursor-pointer" id="dvd-logo-box" style="left: 140px; top: 544.8px; --glow-color: #39ff14;" title="Click to Enter Nails by Soa Studio Website">
+<!-- Holographic Border Ring on Logo Hover -->
+<div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-pink-500 via-fuchsia-400 to-cyan-400 opacity-30 blur-md group-hover:opacity-90 group-hover:blur-xl transition duration-300 pointer-events-none"></div>
+<!-- Retro NBS Nails Emblem Card -->
+<div class="relative w-full h-full rounded-2xl overflow-hidden border-2 border-pink-500/60 shadow-[0_0_30px_rgba(255,0,127,0.5)] bg-black/90 group-hover:border-pink-300 transition duration-300 flex flex-col items-center justify-center p-3" style="border-color: rgb(112, 255, 84); box-shadow: rgb(57, 255, 20) 0px 0px 35px, rgba(57, 255, 20, 0.25) 0px 0px 15px inset;">
+<div class="w-full h-full flex items-center justify-center pointer-events-none p-2"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSoyoMWE74YLWm2NmWSG8sTDgMTzgoUd6X6kwpOcdU1X9NSO8_TLWyI1QD3UjvViFGuDecow3ZshIZ_a48miOZOzFGnAvU-hP1BNgFTqUU4nCgOmp2JD6cBdoYFajp7uKWuaZg-ahoD4QhByU-Uk2Q9WUofesRJff3hkodqLd46jowiDzKjM-_AWNEYRJ_sbTUolbaJn7iiSOtyDLBVjAWcqBBkG1Cpv_OcaLc6Q-4GQfPjlKx6gzS" alt="NBS Nails" class="w-full h-full object-cover rounded-2xl select-none"></div>
+<!-- Retro Scanlines Layer over the logo itself -->
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-pink-500/10 to-transparent pointer-events-none"></div>
+<!-- DVD Video Sub-ribbon inside badge -->
+<div class="absolute bottom-2 inset-x-0 text-center pointer-events-none">
+<span class="inline-block bg-black/80 border border-pink-500/60 px-3 py-0.5 rounded-full text-[10px] font-mono tracking-widest text-pink-300 uppercase shadow-md backdrop-blur-sm">
+            CLICK TO INSERT DISC ✦
+          </span>
+</div>
+</div>
+</div>
+<!-- Center Call-To-Action Instructions -->
+<div class="absolute inset-0 flex flex-col items-center justify-end pb-24 pointer-events-none z-30">
+<div class="pointer-events-auto cursor-pointer group text-center" onclick="enterStudioSite()">
+<div class="press-start-badge text-3xl sm:text-4xl text-pink-400 font-bold tracking-wider mb-2 flex items-center justify-center gap-3">
+<span class="">▶</span> PRESS SCREEN OR CLICK DVD LOGO TO ENTER <span class="">◀</span>
+</div>
+<p class="text-xs uppercase tracking-[0.3em] text-pink-200/70 font-mono flex items-center justify-center gap-2">
+<span class="">✧</span> CYBER DIVA NAIL ARCHITECTURE &amp; BESPOKE 3D SCULPTING <span class="">✧</span>
+</p>
+<!-- Big Glam Enter Button (Alternative click target for users) -->
+<div class="mt-5 inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-gradient-to-r from-pink-600 via-fuchsia-500 to-pink-500 text-white font-extrabold text-sm tracking-wider uppercase shadow-[0_0_30px_rgba(255,0,127,0.7),inset_0_1px_1px_rgba(255,255,255,0.6)] border border-pink-300/60 hover:scale-105 active:scale-95 transition-all duration-200">
+<span class="">💿 LOAD DISC 01: ENTER STUDIO NOW</span>
+<span class="text-lg">→</span>
+</div>
+</div>
+</div>
+<!-- Bottom Retro DVD Status Bar -->
+<footer class="relative z-30 p-6 flex flex-wrap justify-between items-end border-t border-pink-900/40 bg-black/40 backdrop-blur-sm pointer-events-none">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-pink-500 animate-ping"></span>
+<span class="text-xs font-mono text-pink-400 tracking-wider">TRACK 04 // APPOINTMENTS READY</span>
+</div>
+<span class="text-zinc-600 hidden sm:inline">•</span>
+<span class="text-xs font-mono text-zinc-400 hidden sm:inline">1080i WIDESCREEN // 60 FPS MOTION</span>
+</div>
+<div class="flex items-center gap-6 text-xs font-mono text-pink-300/80">
+<div class="flex items-center gap-2">
+<span class="text-emerald-400">●</span> 14 VIP SLOTS UNLOCKED
+        </div>
+<div class="">TIME: <span id="runtime-clock" class="">00:02:13</span></div>
+</div>
+</footer>
+</div>
+<!-- Y2K Fullscreen Transition Portal featuring IMAGE_5 (Cartoon Sticker Girl Avatar) -->
+<div class="fixed inset-0 z-50 pointer-events-none hidden items-center justify-center overflow-hidden" id="y2k-transition-overlay">
+<!-- Chromatic Backdrop & Starlight Grid -->
+<div class="absolute inset-0 bg-black/85 backdrop-blur-xl transition-opacity duration-300 opacity-0" id="portal-backdrop"></div>
+<!-- Radiant Holographic Starburst Rays -->
+<div class="absolute inset-0 flex items-center justify-center opacity-75">
+<div class="w-[600px] h-[600px] sm:w-[850px] sm:h-[850px] rounded-full border-4 border-dashed border-pink-400/40 spin-slow"></div>
+<div class="absolute w-[450px] h-[450px] sm:w-[650px] sm:h-[650px] rounded-full border-2 border-dotted border-cyan-400/50 spin-slow-reverse"></div>
+<div class="absolute w-[350px] h-[350px] rounded-full bg-gradient-to-tr from-pink-600/40 via-purple-600/30 to-cyan-500/40 blur-3xl"></div>
+</div>
+<!-- Central Avatar Container (IMAGE_5) -->
+<div class="relative z-10 flex flex-col items-center justify-center" id="avatar-sticker-container">
+<!-- Sparkle Orbitals -->
+<div class="absolute -top-12 -left-10 text-3xl text-pink-300 animate-ping">✨</div>
+<div class="absolute top-4 -right-14 text-4xl text-cyan-300 animate-bounce">💖</div>
+<div class="absolute -bottom-6 -left-12 text-3xl text-amber-300 animate-pulse">⭐</div>
+<div class="absolute -bottom-10 -right-8 text-3xl text-fuchsia-300 animate-spin">🌸</div>
+<!-- Hot Pink Y2K Glowing Halo -->
+<div class="relative flex items-center justify-center p-4">
+<div class="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 via-fuchsia-500 to-cyan-400 blur-2xl opacity-80 animate-pulse"></div>
+<!-- The Cartoon Sticker Girl Avatar IMAGE_5 -->
+<div class="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 flex items-center justify-center filter drop-shadow-[0_0_35px_rgba(255,0,127,0.95)]">
+<img alt="NBS Nails Diva Avatar" class="w-full h-full object-contain select-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjodFxss5PTLbiwsXzNC9kD5ZspoLVfZ6T2xVskui7usSw6NGUVIvDc4QU-0o-spOkxK7BfE6cTF48aYcgJ1a87_pWAB8PImaT2IxKMytxlUT7qaFpIB69JNxN9LB_ZV_TwDZPSZxF2rGsqr19gMQwrz6i49V0LuGlCK9ZATXjhoxanb-bg_sdT0oEQ626AhJk8IR6ptV_15xjRjvW9XxutqZejUDeX1SvKxlTMNBiqb1K-iQtZVZZ">
+</div>
+</div>
+<!-- Retro Glam Overlay Badges & Title -->
+<div class="mt-4 flex flex-col items-center text-center">
+<div class="inline-flex items-center gap-2 px-6 py-1.5 rounded-full bg-black/80 border-2 border-pink-400 text-pink-300 font-mono text-xs sm:text-sm tracking-widest shadow-[0_0_25px_#ff007f] uppercase">
+<span class="animate-spin text-sm">💿</span> DISC 01: LOADED • ENTERING STUDIO
+        </div>
+<h2 class="y2k-syne text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-white to-pink-400 mt-2 filter drop-shadow-[0_0_20px_rgba(255,0,127,0.8)]">
+          WELCOME TO NAILS BY SOA
+        </h2>
+<p class="pixel-font text-cyan-300 text-lg sm:text-xl tracking-widest mt-1">
+          ✦ 3D CYBER GLAMOUR • BESPOKE SCULPTING ✦
+        </p>
+</div>
+</div>
+<!-- Final Hyperspace White/Hot Pink Flash Layer -->
+<div class="absolute inset-0 bg-gradient-to-r from-pink-500 via-white to-fuchsia-500 opacity-0 pointer-events-none transition-opacity duration-300 z-30" id="portal-flash"></div>
+</div>
+<script>
+    // Audio Context Synthesizer for retro DVD / 2000s console chimes
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playBounceChime(frequency = 520) {
+      try {
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(frequency * 1.5, audioCtx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      } catch(e) {}
+    }
+
+    function playEnterWarpSound() {
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        // Dual oscillator for rich sparkling 2000s console chime
+        const now = audioCtx.currentTime;
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc1.type = 'triangle';
+        osc1.frequency.setValueAtTime(260, now);
+        osc1.frequency.exponentialRampToValueAtTime(880, now + 0.4);
+        osc1.frequency.exponentialRampToValueAtTime(1760, now + 0.9);
+
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(520, now);
+        osc2.frequency.exponentialRampToValueAtTime(1320, now + 0.5);
+        osc2.frequency.exponentialRampToValueAtTime(2200, now + 1.1);
+
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 1.2);
+        osc2.stop(now + 1.2);
+      } catch(e) {}
+    }
+
+    // DVD Bouncer Physics State
+    const box = document.getElementById('dvd-logo-box');
+    const counterDisplay = document.getElementById('bounce-counter');
+    const clockDisplay = document.getElementById('runtime-clock');
+    
+    let boxWidth = 260;
+    let boxHeight = 260;
+    let x = Math.max(20, Math.floor(Math.random() * (window.innerWidth - boxWidth - 40)));
+    let y = Math.max(60, Math.floor(Math.random() * (window.innerHeight - boxHeight - 120)));
+    
+    // Speed vectors in pixels per frame
+    let speed = 2.8;
+    let dx = speed * (Math.random() > 0.5 ? 1 : -1);
+    let dy = speed * (Math.random() > 0.5 ? 1 : -1);
+
+    let cornerHits = 0;
+    let startTime = Date.now();
+
+    // Vibrant early-2000s hot neon & Y2K jewel tones that cycle on every wall hit
+    const colorThemes = [
+      { glow: '#ff007f', border: '#ff3399', text: 'HOT PINK' },
+      { glow: '#00f0ff', border: '#33ccff', text: 'CYBER CYAN' },
+      { glow: '#b026ff', border: '#cc66ff', text: 'ELECTRIC PLUM' },
+      { glow: '#ffe600', border: '#ffea4d', text: 'Y2K GOLD' },
+      { glow: '#ff3864', border: '#ff6685', text: 'VELOUR CHERRY' },
+      { glow: '#39ff14', border: '#70ff54', text: 'MATRIX ACID' }
+    ];
+    let currentColorIndex = 0;
+
+    function applyNextColor() {
+      currentColorIndex = (currentColorIndex + 1) % colorThemes.length;
+      const theme = colorThemes[currentColorIndex];
+      box.style.setProperty('--glow-color', theme.glow);
+      const innerBorder = box.querySelector('.relative');
+      if (innerBorder) {
+        innerBorder.style.borderColor = theme.border;
+        innerBorder.style.boxShadow = `0 0 35px ${theme.glow}, inset 0 0 15px ${theme.glow}40`;
+      }
+    }
+
+    function animate() {
+      const maxX = window.innerWidth - boxWidth;
+      const maxY = window.innerHeight - boxHeight;
+
+      x += dx;
+      y += dy;
+
+      let hitX = false;
+      let hitY = false;
+
+      // Bounce horizontal
+      if (x <= 0) {
+        x = 0;
+        dx = -dx;
+        hitX = true;
+      } else if (x >= maxX) {
+        x = maxX;
+        dx = -dx;
+        hitX = true;
+      }
+
+      // Bounce vertical (keep inside top HUD and bottom status)
+      const topBoundary = 10;
+      const bottomBoundary = maxY - 10;
+
+      if (y <= topBoundary) {
+        y = topBoundary;
+        dy = -dy;
+        hitY = true;
+      } else if (y >= bottomBoundary) {
+        y = bottomBoundary;
+        dy = -dy;
+        hitY = true;
+      }
+
+      if (hitX || hitY) {
+        applyNextColor();
+        playBounceChime(hitX && hitY ? 880 : 440 + Math.random() * 200);
+
+        // Check rare corner hit!
+        if (hitX && hitY) {
+          cornerHits++;
+          counterDisplay.textContent = `CORNER HITS: 0${cornerHits}`;
+          counterDisplay.style.color = '#39ff14';
+          counterDisplay.style.textShadow = '0 0 20px #39ff14';
+        }
+      }
+
+      box.style.left = x + 'px';
+      box.style.top = y + 'px';
+
+      // Update runtime timer
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const hrs = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+      const secs = String(elapsed % 60).padStart(2, '0');
+      clockDisplay.textContent = `${hrs}:${mins}:${secs}`;
+
+      requestAnimationFrame(animate);
+    }
+
+    // Start movement loop
+    requestAnimationFrame(animate);
+
+    // Responsive window resize handle
+    window.addEventListener('resize', () => {
+      boxWidth = box.offsetWidth || 260;
+      boxHeight = box.offsetHeight || 260;
+      if (x > window.innerWidth - boxWidth) x = window.innerWidth - boxWidth;
+      if (y > window.innerHeight - boxHeight) y = window.innerHeight - boxHeight;
+    });
+
+    // Handle audio unlock on first user interaction
+    window.addEventListener('pointerdown', () => {
+      initAudio();
+    }, { once: true });
+
+    // Transition into main studio website starring IMAGE_5 Avatar sticker
+    let isTransitioning = false;
+    function enterStudioSite() {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      playEnterWarpSound();
+
+      // Trigger background warp
+      const root = document.getElementById('screensaver-root');
+      root.classList.add('open-portal-anim');
+
+      // Display the Y2K Avatar Transition Overlay
+      const overlay = document.getElementById('y2k-transition-overlay');
+      const backdrop = document.getElementById('portal-backdrop');
+      const stickerContainer = document.getElementById('avatar-sticker-container');
+      const flash = document.getElementById('portal-flash');
+
+      overlay.classList.remove('hidden');
+      overlay.classList.add('flex');
+
+      // Trigger smooth transitions
+      requestAnimationFrame(() => {
+        backdrop.style.opacity = '0.9';
+        stickerContainer.classList.add('avatar-portal-intro');
+      });
+
+      // Culminating hyper-speed flash before portal entry completes
+      setTimeout(() => {
+        flash.style.opacity = '0.95';
+      }, 1000);
+
+      setTimeout(() => {
+        alert('✨ DISC INSERTED! ✨\n\nWelcome to Nails by Soa — Opening Sets Gallery & Booking Portal!');
+        window.location.reload();
+      }, 1350);
+    }
+
+    // Connect clicks directly to DVD logo and document click
+    box.addEventListener('click', (e) => {
+      e.stopPropagation();
+      enterStudioSite();
+    });
+
+    document.getElementById('screensaver-root').addEventListener('click', (e) => {
+      if (e.target.closest('#dvd-logo-box') || e.target.closest('.group')) return;
+      enterStudioSite();
+    });
+  </script>
+
+
+</body></html>
