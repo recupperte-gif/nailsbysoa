@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+:root {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+}
+
 @theme {
   --color-deepBlack: #000000;
   --color-crispWhite: #FFFFFF;
