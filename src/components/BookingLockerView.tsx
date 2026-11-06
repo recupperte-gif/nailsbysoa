@@ -13,6 +13,7 @@ export interface BookingSubmissionData {
 
 interface BookingLockerViewProps {
   onBackToCorkboard: () => void;
+  onBackToTheSoaDrop?: () => void;
   onBackToScreensaver: () => void;
   onStartBookingSubmission: (data: BookingSubmissionData) => Promise<void>;
   isLoading?: boolean;
@@ -166,6 +167,7 @@ const OCTOBER_DAYS: CalendarDay[] = [
 
 export const BookingLockerView: React.FC<BookingLockerViewProps> = ({
   onBackToCorkboard,
+  onBackToTheSoaDrop,
   onBackToScreensaver,
   onStartBookingSubmission,
   isLoading = false,
@@ -271,16 +273,27 @@ export const BookingLockerView: React.FC<BookingLockerViewProps> = ({
               </div>
 
               {/* Navigation Back Bar (Subtle & In-Style) */}
-              <div className="relative z-30 pt-3 px-4 sm:px-8 flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={onBackToCorkboard}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 hover:bg-white text-[#7a2043] font-label-sm text-xs border border-white shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer font-bold"
-                  title="Revenir au tableau en liège Nails by Soa"
-                >
-                  <span>←</span>
-                  <span>RETOUR AU MOODBOARD LIÈGE</span>
-                </button>
+              <div className="relative z-30 pt-3 px-4 sm:px-8 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={onBackToTheSoaDrop || onBackToCorkboard}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 hover:bg-white text-[#7a2043] font-label-sm text-xs border border-white shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer font-bold"
+                    title="Revenir à The SOA Drop"
+                  >
+                    <span>←</span>
+                    <span>THE SOA DROP</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onBackToCorkboard}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/70 hover:bg-white text-[#7a2043] font-label-sm text-xs border border-white/80 shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer font-bold"
+                    title="Afficher le moodboard en liège"
+                  >
+                    <span>📌</span>
+                    <span>TABLEAU LIÈGE</span>
+                  </button>
+                </div>
                 <button
                   type="button"
                   onClick={onBackToScreensaver}

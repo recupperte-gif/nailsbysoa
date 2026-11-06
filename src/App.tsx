@@ -5,6 +5,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import BookingLockerView, { BookingSubmissionData } from './components/BookingLockerView';
+import TheSoaDropView from './components/TheSoaDropView';
 
 // Preset Y2K Cyber Glam inspirations for quick consultation
 const PRESET_IDEAS = [
@@ -25,8 +26,9 @@ const COLOR_THEMES = [
 ];
 
 export default function App() {
-  // Website view state: starts at 'screensaver', transitions on click to 'corkboard', or 'booking' (Pink Locker)
-  const [viewMode, setViewMode] = useState<'screensaver' | 'corkboard' | 'booking'>('screensaver');
+  // Website view state: starts at 'screensaver', transitions to 'the-soa-drop', 'corkboard', or 'booking' (Pink Locker)
+  const [viewMode, setViewMode] = useState<'screensaver' | 'the-soa-drop' | 'corkboard' | 'booking'>('screensaver');
+  const [recapCopied, setRecapCopied] = useState(false);
 
   // Booking Confirmation Pop-up state
   const [bookingConfirmation, setBookingConfirmation] = useState<{
@@ -64,6 +66,40 @@ export default function App() {
 
   // CD Player state
   const [isCdPlaying, setIsCdPlaying] = useState(true);
+
+  // Live Countdown Timer for The SOA Drop Flip Phone widget
+  const [countdown, setCountdown] = useState({
+    days: '04',
+    hours: '18',
+    minutes: '34',
+    seconds: '35',
+  });
+
+  useEffect(() => {
+    const totalDurationMs = (4 * 24 * 3600 + 18 * 3600 + 34 * 60 + 35) * 1000;
+    const targetDate = Date.now() + totalDurationMs;
+
+    const interval = setInterval(() => {
+      const distance = targetDate - Date.now();
+      if (distance <= 0) {
+        setCountdown({ days: '00', hours: '00', minutes: '00', seconds: '00' });
+        clearInterval(interval);
+        return;
+      }
+      const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((distance % (1000 * 60)) / 1000);
+      setCountdown({
+        days: String(d).padStart(2, '0'),
+        hours: String(h).padStart(2, '0'),
+        minutes: String(m).padStart(2, '0'),
+        seconds: String(s).padStart(2, '0'),
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Audio Context Ref for 2000s chimes
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -763,6 +799,16 @@ export default function App() {
 
                   {/* Pinned Badges around Header */}
                   <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-1">
+                    <button
+                      type="button"
+                      onClick={() => setViewMode('the-soa-drop')}
+                      className="bg-[#ff007f] hover:bg-[#d6006b] text-white font-syne font-black px-3 py-1 rounded-full shadow-lg border-2 border-white transform -rotate-2 hover:scale-105 active:scale-95 transition cursor-pointer text-[10px] sm:text-xs flex items-center gap-1.5"
+                      title="Découvrir le nouveau drop: The SOA Drop"
+                    >
+                      <span>✨</span>
+                      <span>THE SOA DROP (DROP 001)</span>
+                      <span>→</span>
+                    </button>
                     <div className="bg-white text-black px-2 py-0.5 rounded shadow-md border border-black transform -rotate-6 text-[9px] sm:text-[10px] font-black tracking-tighter">
                       I <span className="text-[#e0247d]">♥</span> NAILS
                     </div>
@@ -1135,6 +1181,184 @@ export default function App() {
                   </figure>
                 </div>
 
+                {/* BEGIN: Retro Pink Flip Phone Charm Widget (The SOA Drop Countdown) */}
+                <div
+                  className="relative bg-gradient-to-br from-[#1a050d] via-[#4d0a28] to-[#120309] rounded-2xl p-4 md:p-6 border-2 border-[#ff2a8d] shadow-2xl backdrop-blur-md transform rotate-1 hover:rotate-0 transition duration-300 overflow-hidden"
+                  data-purpose="soa-drop-phone-widget"
+                >
+                  {/* Realistic Push Pin & Metallic Keychain Chain */}
+                  <div className="pin-head pin-pink !-top-3 !left-12"></div>
+                  <div className="w-28 h-5 tape-holo-foil tape-torn-edges absolute -top-2.5 right-8 transform rotate-3 z-30 shadow-md flex items-center justify-center">
+                    <span className="text-[8px] font-mono text-white font-black tracking-widest select-none">
+                      ★ THE SOA DROP ★
+                    </span>
+                  </div>
+                  <div className="flex flex-col md:flex-row items-center md:items-stretch gap-6 relative z-10">
+                    {/* Realistic Pink Flip Phone Device */}
+                    <div
+                      className="relative flex-shrink-0 w-48 md:w-52 bg-gradient-to-b from-[#ff2a8d] via-[#e0247d] to-[#9c1d57] p-2.5 pb-2 rounded-[2rem] shadow-2xl border-4 border-white/85 ring-4 ring-black/70 transform -rotate-1 hover:rotate-0 transition duration-300 group self-center md:self-auto cursor-pointer"
+                      onClick={() => setViewMode('the-soa-drop')}
+                      title="Ouvrir la campagne The SOA Drop"
+                    >
+                      <div className="absolute -left-3.5 top-4 flex flex-col items-center pointer-events-none z-20">
+                        <div className="w-5 h-5 rounded-full border-2 border-white bg-gradient-to-br from-white via-neutral-300 to-neutral-500 shadow-md"></div>
+                        <div className="w-4 h-4 -mt-1 rounded-full border-2 border-white/80 bg-neutral-400 shadow-inner"></div>
+                        <div className="w-5 h-5 -mt-1 rounded-full border-2 border-white bg-gradient-to-br from-[#ff2a8d] to-yellow-300 flex items-center justify-center text-[10px] text-black font-black shadow-md">
+                          ★
+                        </div>
+                      </div>
+                      <div className="w-10 h-1 bg-black/60 rounded-full mx-auto mb-1.5 border border-white/40 shadow-inner"></div>
+                      <div className="bg-neutral-950 p-1.5 rounded-2xl border-2 border-black shadow-inner">
+                        <div className="bg-[#ffeaf2] text-neutral-900 rounded-xl p-2 font-mono shadow-inner border border-[#ff2a8d]/40 relative overflow-hidden">
+                          <div className="flex items-center justify-between text-[9px] font-bold border-b border-black/20 pb-1 mb-1 text-neutral-800">
+                            <span className="flex items-center gap-0.5 tracking-tighter">📶 5G_NBS</span>
+                            <span className="text-[8px] bg-[#e0247d] text-white px-1 py-0.5 rounded uppercase tracking-wider font-extrabold animate-pulse">
+                              LIVE DROP
+                            </span>
+                            <span className="flex items-center gap-0.5 font-mono text-[9px]">98% 🔋</span>
+                          </div>
+                          <div className="text-center mb-1">
+                            <p className="text-[8px] uppercase tracking-wider text-[#9c1d57] font-bold">
+                              NEW ALERT // 01 DROP
+                            </p>
+                            <h5 className="font-syne font-black text-xs text-black tracking-tight leading-tight uppercase">
+                              THE SOA DROP
+                            </h5>
+                            <p className="text-[7px] text-neutral-600 font-mono italic">
+                              "Not everyone get the same nails"
+                            </p>
+                          </div>
+                          <div className="bg-black text-[#ff2a8d] rounded-lg p-1.5 border border-[#e0247d] text-center shadow my-1">
+                            <p className="text-[7px] uppercase tracking-widest text-neutral-300 font-bold mb-0.5">
+                              LANCEMENT DANS :
+                            </p>
+                            <div className="grid grid-cols-4 gap-1 items-center justify-center text-center font-mono leading-none">
+                              <div className="bg-neutral-900 border border-[#ff2a8d]/60 rounded py-0.5 px-0.5">
+                                <span className="block text-xs font-black text-yellow-300 tracking-tight" id="countdown-days">
+                                  {countdown.days}
+                                </span>
+                                <span className="block text-[7px] text-neutral-300 font-bold uppercase mt-0.5">
+                                  J
+                                </span>
+                              </div>
+                              <div className="bg-neutral-900 border border-[#ff2a8d]/60 rounded py-0.5 px-0.5">
+                                <span className="block text-xs font-black text-yellow-300 tracking-tight" id="countdown-hours">
+                                  {countdown.hours}
+                                </span>
+                                <span className="block text-[7px] text-neutral-300 font-bold uppercase mt-0.5">
+                                  H
+                                </span>
+                              </div>
+                              <div className="bg-neutral-900 border border-[#ff2a8d]/60 rounded py-0.5 px-0.5">
+                                <span className="block text-xs font-black text-yellow-300 tracking-tight" id="countdown-minutes">
+                                  {countdown.minutes}
+                                </span>
+                                <span className="block text-[7px] text-neutral-300 font-bold uppercase mt-0.5">
+                                  M
+                                </span>
+                              </div>
+                              <div className="bg-neutral-900 border border-[#ff2a8d]/60 rounded py-0.5 px-0.5">
+                                <span className="block text-xs font-black text-[#ff2a8d] tracking-tight" id="countdown-seconds">
+                                  {countdown.seconds}
+                                </span>
+                                <span className="block text-[7px] text-neutral-300 font-bold uppercase mt-0.5">
+                                  S
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="bg-gradient-to-r from-[#9c1d57] to-[#e0247d] text-white text-[8px] font-bold p-1 rounded text-center tracking-wide shadow-sm truncate">
+                            ✨ ACCÈS COFFRET VIP &amp; IA ON-SITE
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-1.5 pt-1 border-t border-black/30 flex justify-center items-center gap-1.5">
+                        <div className="w-5 h-1.5 bg-neutral-800 rounded-full border border-white/30 shadow-inner"></div>
+                        <div className="w-3 h-1.5 bg-neutral-900 rounded-full border border-white/30"></div>
+                      </div>
+                    </div>
+
+                    {/* Content & Features Overview Banner (Web3 Mechanics + VIP Pass) */}
+                    <div className="flex-1 min-w-0 flex flex-col justify-between space-y-3 text-left">
+                      <div>
+                        <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                          <div className="inline-flex items-center gap-1.5 bg-[#e0247d] text-white font-mono text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow">
+                            <span className="w-1.5 h-1.5 rounded-full bg-yellow-300 animate-ping"></span>
+                            CAMPAGNE DIGITALE WEB3 &amp; IA
+                          </div>
+                        </div>
+                        <h3 className="font-syne font-black text-lg md:text-xl text-white tracking-normal uppercase leading-tight mb-2 break-words">
+                          PROCHAINEMENT :{' '}
+                          <span className="text-yellow-300 underline decoration-[#e0247d]">
+                            THE SOA DROP
+                          </span>
+                        </h3>
+                        <p className="text-xs md:text-sm text-neutral-100 font-sans leading-relaxed">
+                          Préparez-vous : le nouveau drop exclusif de press-on nails arrive ! Des sets d'art sur-mesure ultra
+                          limités, faits main et prêts à poser. Tenez-vous prêtes pour sécuriser votre création exclusive !
+                        </p>
+                      </div>
+
+                      {/* Key Highlights Pills */}
+                      <div className="grid grid-cols-3 gap-2 text-[10px] font-mono">
+                        <div
+                          className="bg-black/60 border border-white/20 rounded-lg p-2 text-center shadow min-w-0 cursor-pointer hover:border-pink-400 transition"
+                          onClick={() => setViewMode('the-soa-drop')}
+                        >
+                          <span className="text-[#ff2a8d] block font-bold text-[11px] truncate uppercase">
+                            💳 PASS VIP
+                          </span>
+                          <span className="text-white/80 block mt-0.5 text-[9px] md:text-[10px] truncate">
+                            Accès prioritaire
+                          </span>
+                        </div>
+                        <div
+                          className="bg-black/60 border border-white/20 rounded-lg p-2 text-center shadow min-w-0 cursor-pointer hover:border-pink-400 transition"
+                          onClick={() => setViewMode('the-soa-drop')}
+                        >
+                          <span className="text-yellow-300 block font-bold text-[11px] truncate uppercase">
+                            ✨ IA ON-SITE
+                          </span>
+                          <span className="text-white/80 block mt-0.5 text-[9px] md:text-[10px] truncate">
+                            Design sur-mesure
+                          </span>
+                        </div>
+                        <div
+                          className="bg-black/60 border border-white/20 rounded-lg p-2 text-center shadow min-w-0 cursor-pointer hover:border-pink-400 transition"
+                          onClick={() => setViewMode('the-soa-drop')}
+                        >
+                          <span className="text-[#ff2a8d] block font-bold text-[10px] truncate uppercase">
+                            💎 COLLECTIBLE
+                          </span>
+                          <span className="text-white/80 block mt-0.5 text-[9px] md:text-[10px] truncate">
+                            Récompenses fidélité
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Action CTA Buttons */}
+                      <div className="flex flex-wrap items-center gap-3 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => setViewMode('the-soa-drop')}
+                          className="inline-flex items-center gap-2 bg-yellow-300 hover:bg-yellow-400 text-black font-syne font-black text-xs px-4 py-2.5 rounded-md shadow-md transform hover:scale-105 active:scale-95 transition cursor-pointer border border-black"
+                        >
+                          <span>⚡ DÉCOUVRIR LE CALENDRIER DU DROP</span>
+                          <span>➔</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setViewMode('the-soa-drop')}
+                          className="text-[10px] font-mono text-[#ff2a8d] font-bold tracking-wider hover:underline cursor-pointer bg-transparent border-none p-0"
+                        >
+                          ✦ OUVERTURE DES INSCRIPTIONS VIP
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* END: Retro Pink Flip Phone Charm Widget */}
+
                 {/* Mini FAQ flyer & Booking Sticky Note */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-5 mt-2">
                   {/* Mini FAQ flyer */}
@@ -1244,7 +1468,11 @@ export default function App() {
                     <div className="w-20 sm:w-24 h-4 sm:h-5 tape-crinkle-metallic tape-torn-edges absolute -bottom-2 -right-2 transform rotate-6 z-30 shadow-md"></div>
                     <div className="pin-head pin-yellow"></div>
                     <div className="flex items-center justify-between border-b border-white/40 pb-2 mb-3">
-                      <div className="flex items-center gap-1.5">
+                      <div
+                        className="flex items-center gap-1.5 cursor-pointer"
+                        onClick={() => setViewMode('booking')}
+                        title="Ouvrir la réservation"
+                      >
                         <span className="text-lg">💅</span>
                         <h3 className="font-marker text-base sm:text-lg tracking-wide text-yellow-300 drop-shadow">
                           RÉSERVEZ VOTRE CRÉNEAU
@@ -1255,8 +1483,7 @@ export default function App() {
                       </span>
                     </div>
                     <p className="text-xs leading-relaxed text-white mb-4 font-sans font-medium">
-                      Prête pour des ongles spectaculaires McBling ? Cliquez ci-dessous pour demander votre
-                      rendez-vous ou lancer votre prescription sur-mesure avec l'IA du studio !
+                      Prête pour des ongles spectaculaires McBling ? Cliquez ci-dessous pour demander votre rendez-vous ou envoyez vos inspirations en message direct.
                     </p>
                     <div className="space-y-2">
                       <button
@@ -1267,7 +1494,7 @@ export default function App() {
                       >
                         <span className="flex items-center gap-1.5">
                           <span>⚡</span>
-                          <span>RÉSERVER UN CRÉNEAU / INSPIRATION</span>
+                          <span>RÉSERVER UN CRÉNEAU</span>
                         </span>
                         <span>→</span>
                       </button>
@@ -1474,10 +1701,21 @@ export default function App() {
       )}
 
       {/* ============================================================== */}
+      {/* 2. THE SOA DROP VIEW (NEW CORKBOARD / VELOUR MCBLING DESIGN)   */}
+      {/* ============================================================== */}
+      {viewMode === 'the-soa-drop' && (
+        <TheSoaDropView
+          onNavigate={(targetView) => setViewMode(targetView)}
+          onOpenConsultation={(concept) => handleOpenConsultation(concept)}
+        />
+      )}
+
+      {/* ============================================================== */}
       {/* 2.5. PINK LOCKER BOOKING VIEW (100% IDENTICAL STITCH DESIGN)   */}
       {/* ============================================================== */}
       {viewMode === 'booking' && (
         <BookingLockerView
+          onBackToTheSoaDrop={() => setViewMode('the-soa-drop')}
           onBackToCorkboard={() => setViewMode('corkboard')}
           onBackToScreensaver={() => setViewMode('screensaver')}
           onStartBookingSubmission={handleBookingSubmission}
@@ -1486,12 +1724,12 @@ export default function App() {
       )}
 
       {/* ============================================================== */}
-      {/* BOOKING CONFIRMATION MODAL                                    */}
+      {/* BOOKING CONFIRMATION MODAL (WITH AI-GENERATED DM MESSAGE RECAP)*/}
       {/* ============================================================== */}
       {bookingConfirmation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md font-['Space_Grotesk']">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md font-['Space_Grotesk'] overflow-y-auto">
           <div
-            className="relative w-full max-w-lg rounded-2xl sm:rounded-3xl bg-[#18091e] border-3 border-[#ff4a8d] p-5 sm:p-7 shadow-[0_0_60px_rgba(255,74,141,0.65)] text-white flex flex-col gap-4 text-center"
+            className="relative w-full max-w-lg rounded-2xl sm:rounded-3xl bg-[#18091e] border-3 border-[#ff4a8d] p-5 sm:p-7 shadow-[0_0_60px_rgba(255,74,141,0.65)] text-white flex flex-col gap-4 text-center my-8"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top Washi Tape */}
@@ -1515,51 +1753,78 @@ export default function App() {
                 <span className="text-3xl">💖</span>
               </div>
               <h3 className="font-display-lg text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-white to-pink-400">
-                CRÉNEAU ENREGISTRÉ !
+                MESSAGE DM PRÊT À ENVOYER !
               </h3>
               <p className="font-body-sm text-xs text-pink-200 mt-1">
-                Ta demande officielle est prête pour Soa sur Instagram DM
+                L'IA a généré ton récapitulatif complet et l'a pré-collé pour Instagram. Il ne te reste plus qu'à l'envoyer !
               </p>
             </div>
 
-            {/* Details Box */}
-            <div className="bg-black/60 rounded-2xl p-4 border border-pink-500/40 text-left space-y-2 text-xs font-mono">
-              <div className="flex justify-between border-b border-white/10 pb-1.5">
-                <span className="text-zinc-400">PRESTATION :</span>
-                <span className="text-[#ff4a8d] font-bold">{bookingConfirmation.prestation}</span>
+            {/* Generated Message Preview Box */}
+            <div className="bg-black/80 rounded-2xl p-4 border border-pink-500/50 text-left space-y-2">
+              <div className="flex items-center justify-between border-b border-pink-500/30 pb-1.5">
+                <span className="text-[11px] font-bold text-[#ff4a8d] uppercase tracking-wider flex items-center gap-1">
+                  <span>📱</span> Message pré-collé dans le chat
+                </span>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(bookingConfirmation.messageText);
+                    setRecapCopied(true);
+                    setTimeout(() => setRecapCopied(false), 2500);
+                  }}
+                  className="px-2.5 py-1 rounded bg-[#ff4a8d] hover:bg-[#ff0077] text-white font-mono text-[10px] font-bold uppercase transition cursor-pointer shadow-sm"
+                >
+                  {recapCopied ? '✓ Copié !' : '📋 Copier'}
+                </button>
               </div>
-              <div className="flex justify-between border-b border-white/10 pb-1.5">
-                <span className="text-zinc-400">CRÉNEAU CHOISI :</span>
-                <span className="text-white font-bold">{bookingConfirmation.slot}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-400">INSTAGRAM :</span>
-                <span className="text-yellow-300 font-bold">{bookingConfirmation.instagram}</span>
+
+              <div className="max-h-48 overflow-y-auto pr-1 text-xs font-sans leading-relaxed text-pink-100 whitespace-pre-wrap selection:bg-[#ff4a8d]">
+                {bookingConfirmation.messageText}
               </div>
             </div>
 
-            {/* AI Note if returned */}
-            {bookingConfirmation.aiNote && (
-              <div className="p-3 bg-pink-950/40 rounded-xl border border-pink-500/30 text-left text-xs font-sans italic text-pink-100">
-                <p className="font-bold text-[#ff4a8d] not-italic text-[11px] mb-1">
-                  💬 Mot de Soa (Gemini AI) :
-                </p>
-                <p className="text-[11px] leading-relaxed line-clamp-4">{bookingConfirmation.aiNote}</p>
+            {/* Details Summary Pill Bar */}
+            <div className="grid grid-cols-2 gap-2 text-[11px] font-mono text-left bg-pink-950/40 p-2.5 rounded-xl border border-pink-500/20">
+              <div>
+                <span className="text-zinc-400 block text-[9px] uppercase">Prestation :</span>
+                <span className="text-[#ff4a8d] font-bold truncate block">{bookingConfirmation.prestation}</span>
               </div>
-            )}
+              <div>
+                <span className="text-zinc-400 block text-[9px] uppercase">Créneau :</span>
+                <span className="text-white font-bold truncate block">{bookingConfirmation.slot}</span>
+              </div>
+            </div>
 
             {/* Actions */}
-            <div className="flex flex-col gap-2 pt-2">
+            <div className="flex flex-col gap-2 pt-1">
               <a
                 href={bookingConfirmation.igUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="puffy-btn w-full py-3 px-4 rounded-full bg-gradient-to-r from-[#ff0077] via-[#ff4a8d] to-[#ff0077] text-white font-label-lg text-xs sm:text-sm uppercase tracking-wider border-2 border-white flex items-center justify-center gap-2 cursor-pointer font-bold"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(bookingConfirmation.messageText);
+                  } catch {}
+                }}
+                className="puffy-btn w-full py-3.5 px-4 rounded-full bg-gradient-to-r from-[#ff0077] via-[#ff4a8d] to-[#ff0077] text-white font-label-lg text-xs sm:text-sm uppercase tracking-wider border-2 border-white flex items-center justify-center gap-2 cursor-pointer font-bold hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
                 <span>💌</span>
-                <span>OUVRIR MON DM INSTAGRAM MAINTENANT</span>
+                <span>OUVRIR LE CHAT INSTAGRAM &amp; ENVOYER</span>
+                <span>→</span>
               </a>
+
               <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBookingConfirmation(null);
+                    setViewMode('the-soa-drop');
+                  }}
+                  className="flex-1 py-2 px-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-mono text-xs uppercase border border-white/20 transition cursor-pointer"
+                >
+                  The SOA Drop
+                </button>
                 <button
                   type="button"
                   onClick={() => {
@@ -1568,12 +1833,12 @@ export default function App() {
                   }}
                   className="flex-1 py-2 px-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-mono text-xs uppercase border border-white/20 transition cursor-pointer"
                 >
-                  Voir ticket sur liège
+                  Tableau Liège
                 </button>
                 <button
                   type="button"
                   onClick={() => setBookingConfirmation(null)}
-                  className="flex-1 py-2 px-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-mono text-xs uppercase border border-white/20 transition cursor-pointer"
+                  className="py-2 px-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-mono text-xs uppercase border border-white/20 transition cursor-pointer"
                 >
                   Fermer
                 </button>

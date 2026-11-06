@@ -27,11 +27,51 @@ html, body {
   --color-matrix-lime: #39ff14;
   --color-electric-purple: #b026ff;
 
+  --color-surface-container-highest: #f3daff;
+  --color-surface-container-high: #f6e1ff;
+  --color-surface-container: #fae8ff;
+  --color-surface-container-low: #fdefff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-bright: #fff7fd;
+  --color-surface-dim: #ebd1f8;
+  --color-surface: #fff7fd;
+  --color-surface-variant: #f7e8fc;
+  --color-background: #fff7fd;
+  --color-on-surface: #251431;
+  --color-on-surface-variant: #66495d;
+  --color-on-background: #251431;
+  --color-outline: #d6a9be;
+  --color-outline-variant: #f1d4e0;
+  --color-primary: #b60059;
+  --color-primary-container: #ff007f;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #ffffff;
+  --color-secondary: #7c556e;
+  --color-secondary-container: #fce4ef;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #522643;
+  --color-tertiary: #844b55;
+  --color-tertiary-container: #a0636e;
+
+  --spacing-margin: 1.5rem;
+  --spacing-margin-lg: 3rem;
+  --spacing-margin-sm: 1rem;
+  --spacing-space-xs: 0.25rem;
+  --spacing-space-sm: 0.5rem;
+  --spacing-space-md: 1rem;
+  --spacing-space-lg: 1.5rem;
+  --spacing-space-xl: 2.5rem;
+  --spacing-space-2xl: 4rem;
+  --spacing-gutter: 1.25rem;
+  --spacing-gutter-lg: 2rem;
+  --spacing-gutter-sm: 0.75rem;
+
   --font-monoReceipt: 'VT323', 'Courier Prime', monospace;
   --font-marker: 'Permanent Marker', cursive;
   --font-syne: 'Syne', sans-serif;
   --font-receiptSub: 'Space Mono', monospace;
   --font-pixel: 'VT323', monospace;
+  --font-display-hero: 'Syne', sans-serif;
 }
 
 :root {

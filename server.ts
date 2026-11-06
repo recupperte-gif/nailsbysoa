@@ -25,6 +25,23 @@ const ai = new GoogleGenAI({
   },
 });
 
+// Helper for non-blocking timeout on Gemini calls
+async function callGeminiWithTimeout<T>(promise: Promise<T>, timeoutMs = 3000): Promise<T | null> {
+  let timeoutHandle: NodeJS.Timeout | null = null;
+  const timeoutPromise = new Promise<null>((resolve) => {
+    timeoutHandle = setTimeout(() => resolve(null), timeoutMs);
+  });
+  try {
+    const res = await Promise.race([promise, timeoutPromise]);
+    return res as T | null;
+  } catch (err) {
+    console.warn('Gemini call error or timeout:', err);
+    return null;
+  } finally {
+    if (timeoutHandle) clearTimeout(timeoutHandle);
+  }
+}
+
 // Endpoint to generate 2000s cyber glam nail consultations & bespoke architecture
 app.post('/api/gemini/generate', async (req, res) => {
   try {
@@ -69,6 +86,7 @@ Give 2-3 punchy, humorous, diva-level rules for keeping the 3D set flawless and 
     });
 
     const text = response.text || '';
+    return res.json({ result: text });
   } catch (err: any) {
     console.error('Gemini API Error:', err);
     return res.status(500).json({
@@ -143,8 +161,8 @@ app.post('/api/booking', async (req, res) => {
 
     bookingsStore.unshift(newBooking);
 
-    // Instagram DM prefilled text
-    const messageText =
+    // Default fallback template in case AI is disabled or fails
+    let messageText =
       `Coucou Soa ! 💕 Je souhaite réserver pour :\n\n` +
       `• Prestation : ${cleanPresta}${hasDeposeText}\n` +
       `• Créneau : ${cleanSlot}\n` +
@@ -153,25 +171,46 @@ app.post('/api/booking', async (req, res) => {
       (inspirationNote ? `• Note inspiration : ${inspirationNote}\n` : '') +
       `\nJe t'envoie mon modèle d'inspiration en photo ! ✨`;
 
-    const igUrl = `https://ig.me/m/nailsbysoa?text=${encodeURIComponent(messageText)}`;
-
-    // Optional quick AI guidance from Gemini for this booking
     let aiPrescription = '';
+
+    // Generate complete personalized message recap with Gemini AI
     if (process.env.GEMINI_API_KEY) {
       try {
-        const aiPrompt = `Une cliente nommée @${cleanInsta} vient de réserver chez Nails by Soa pour un créneau ${cleanSlot}. Prestation choisie : ${cleanPresta}${hasDeposeText}. Inspiration : ${inspirationNote || 'Style Y2K McBling 3D signature'}. Rédige un mini-mot ultra mignon et stylé (3-4 phrases max) en tant que Soa pour confirmer le rendez-vous, lui donner un conseil de préparation des ongles et une vibe check 2000s pétillante.`;
-        const aiRes = await ai.models.generateContent({
-          model: 'gemini-3.8-flash',
-          contents: aiPrompt,
-          config: {
-            thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
-          },
-        });
-        aiPrescription = aiRes.text || '';
+        const aiPrompt = `Rédige le message Instagram DM complet, chaleureux, chic et pétillant (vibe Y2K McBling) qu'une cliente nommée @${cleanInsta} va envoyer directement à Soa (@nailsbysoa) pour finaliser sa réservation.
+Détails obligatoires à inclure dans le récapitulatif :
+- Salutation amicale et bienveillante à Soa
+- Prestation choisie : ${cleanPresta}${hasDeposeText}
+- Créneau réservé : ${cleanSlot}
+- Pseudo Instagram : @${cleanInsta}
+- Référence de réservation : ${bookingId}
+${inspirationNote ? `- Modèle / inspiration : ${inspirationNote}` : '- Inspiration : modèle photo joint ci-dessous'}
+- Une phrase enthousiaste mentionnant l'envoi de la photo d'inspiration
+- Un court conseil ou clin d'œil Y2K de diva
+
+IMPORTANT : Rends UNIQUEMENT le texte exact du message prêt à être envoyé par la cliente, sans guillemets au début/fin, sans commentaire ni préambule.`;
+
+        const aiRes = await callGeminiWithTimeout(
+          ai.models.generateContent({
+            model: 'gemini-3.8-flash',
+            contents: aiPrompt,
+            config: {
+              thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+            },
+          }),
+          3500
+        );
+
+        const generatedMsg = aiRes?.text?.trim();
+        if (generatedMsg && generatedMsg.length > 20) {
+          messageText = generatedMsg;
+          aiPrescription = generatedMsg;
+        }
       } catch (err) {
-        console.warn('AI note generation non-blocking error:', err);
+        console.warn('AI DM recap generation non-blocking error:', err);
       }
     }
+
+    const igUrl = `https://ig.me/m/nailsbysoa?text=${encodeURIComponent(messageText)}`;
 
     return res.json({
       success: true,
@@ -185,6 +224,86 @@ app.post('/api/booking', async (req, res) => {
     console.error('Booking API error:', err);
     return res.status(500).json({ error: err?.message || 'Erreur lors de la réservation' });
   }
+});
+
+// VIP Pass in-memory store
+interface VipPassRecord {
+  id: string;
+  pseudo: string;
+  email: string;
+  serial: string;
+  createdAt: string;
+  aiWelcomeNote?: string;
+}
+
+const vipPassStore: VipPassRecord[] = [
+  {
+    id: 'PASS-8829',
+    pseudo: 'CHLOÉ MCBLING',
+    email: 'chloe@studio-liege.com',
+    serial: '#SOA-8829-VIP',
+    createdAt: new Date().toISOString(),
+    aiWelcomeNote: 'Bienvenue au club VIP The SOA Drop ! 💖 Accès prioritaire 24h avant chaque drop.',
+  },
+];
+
+// Endpoint to generate a VIP membership pass
+app.post('/api/vip-pass', async (req, res) => {
+  try {
+    const { pseudo = 'CHLOÉ MCBLING', email = '' } = req.body;
+    const cleanPseudo = String(pseudo).trim().toUpperCase() || 'VIP QUEEN';
+    const randomSerial = `#SOA-${Math.floor(1000 + Math.random() * 9000)}-VIP`;
+
+    let aiWelcomeNote = `Félicitations ${cleanPseudo} ! ✨ Ton Pass VIP Digital Nails By Soa est actif. Tu as désormais un accès exclusif et prioritaire à nos capsules d'exception ! 💿💖`;
+
+    if (process.env.GEMINI_API_KEY) {
+      try {
+        const passPrompt = `Rédige un message court et ultra glamour de bienvenue pour la nouvelle membre VIP ${cleanPseudo} qui rejoint le club 'The SOA Drop' (haute onglerie McBling Y2K à Liège & Paris). 2 phrases max, pétillantes avec emojis (✦, 💖, 💿).`;
+        const aiRes = await callGeminiWithTimeout(
+          ai.models.generateContent({
+            model: 'gemini-3.8-flash',
+            contents: passPrompt,
+            config: {
+              thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+            },
+          }),
+          2500
+        );
+        if (aiRes?.text?.trim()) {
+          aiWelcomeNote = aiRes.text.trim();
+        }
+      } catch (e) {
+        console.warn('AI VIP pass generation note error:', e);
+      }
+    }
+
+    const passRecord: VipPassRecord = {
+      id: `PASS-${randomSerial.replace('#SOA-', '').replace('-VIP', '')}`,
+      pseudo: cleanPseudo,
+      email: String(email).trim(),
+      serial: randomSerial,
+      createdAt: new Date().toISOString(),
+      aiWelcomeNote,
+    };
+
+    vipPassStore.unshift(passRecord);
+
+    return res.json({
+      success: true,
+      pass: passRecord,
+      serial: randomSerial,
+      pseudo: cleanPseudo,
+      aiWelcomeNote,
+    });
+  } catch (err: any) {
+    console.error('VIP Pass error:', err);
+    return res.status(500).json({ error: err?.message || 'Erreur pass VIP' });
+  }
+});
+
+// Endpoint to list VIP passes
+app.get('/api/vip-passes', (req, res) => {
+  res.json({ passes: vipPassStore });
 });
 
 // Endpoint to list bookings
